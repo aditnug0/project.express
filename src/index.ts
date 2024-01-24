@@ -6,6 +6,11 @@ import { number } from "joi";
 import { validateCube } from "./middleware/validateCube";
 import routeBangunDatar from "./route/bangunDatar";
 import routeBangunRuang from "./route/bangunRuang";
+import routeEvent from "./route/eventRoute";
+import routeSeats from "./route/seatRoute";
+import routeUsers from "./route/usersRoute";
+import routeTicket from "./route/ticketRoute";
+
 /**buat wadah inisiasi express */
 
 const app = express();
@@ -99,7 +104,15 @@ app.post(`/balok`, validateCube, (request: Request, response: Response) => {
 app.use(routeBangunDatar);
 app.use(routeBangunRuang);
 
+// register route of event
+app.use(routeEvent);
+app.use(routeSeats);
+app.use(routeUsers);
+app.use(routeTicket);
+
 /**run server  */
+
+// use terminal
 app.listen(PORT, () => {
   console.log(`😋 Server running on port ${PORT}`);
 });
