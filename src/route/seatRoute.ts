@@ -1,5 +1,5 @@
 import express from "express";
-import { createSeats, readSeats } from "../controller/seatsController";
+import { createSeats, deleteSeat, readSeats, updateSeat } from "../controller/seatsController";
 const app = express();
 
 // allow to read json from the body
@@ -10,5 +10,11 @@ app.get(`/seat`, readSeats);
 
 // adress for add new event
 app.post(`/seat`, createSeats);
+
+app.put(`/seat/:seatID`, updateSeat);
+
+app.delete(`/seat/:seatID`, deleteSeat);
+
+
 
 export default app;

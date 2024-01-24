@@ -59,4 +59,94 @@ const readUsers = async (request: Request, response: Response) => {
   }
 };
 
-export { createUsers, readUsers };
+
+
+
+// baru
+// function for update event 
+const updateUser = async (request: Request, response: Response) => {
+
+  try {
+    // read event id that sent from url
+    const userID = request.params.userID
+    // read data perubahan
+    const firstname = request.body.firstname
+    const lastname = request.body.lastname
+    const email = request.body.email
+    const password = request.body.password
+
+
+    // make sure that data has existed
+    const findUser = await prisma.users.findFirst({
+      where: { userID: Number(userID) }
+    })
+
+    if (!findUser) {
+      return response.status(400).json({
+        status: false,
+        message: `Data user not found`
+      })
+    }
+
+    const dataUser = await prisma.users.update({
+      where: { userID: Number(userID) },
+      data: {
+        firstname: firstname || findUser.firstname,
+        lastname: lastname || findUser.lastname,
+        email: email || findUser.email,
+        password: password || findUser.password
+      }
+    })
+
+    return response.status(200).json({
+      status: true,
+      message: `User has been updated`,
+      data: dataUser
+    })
+
+  } catch (error) {
+    return response.status(500).json({
+      status: false,
+      message: error,
+    });
+  }
+}
+// create a function to delete event
+const deleteUser = async (request: Request, response: Response) => {
+  try {
+
+    // get event id from url 
+    const userID = request.params.userID
+
+    // make sure that event is exist 
+    const findUser = await prisma.users.findFirst({
+      where: { userID: Number(userID) }
+    })
+
+    if (!findUser) {
+      return response.status(400).json({
+        status: false,
+        message: `Event not found`
+      })
+    }
+
+    // execute for delete event
+    const dataUser = await prisma.users.delete({
+      where: { userID: Number(userID) }
+    })
+
+    // return response 
+    return response.status(200).json({
+      status: true,
+      message: `Data user has been deleted `
+    })
+
+  } catch (error) {
+    return response.status(500).json({
+      status: false,
+      message: error,
+    });
+  }
+}
+
+export { createUsers, readUsers, updateUser, deleteUser };

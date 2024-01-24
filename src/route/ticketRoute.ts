@@ -1,5 +1,5 @@
 import express from "express";
-import { createTicket, readTicket } from "../controller/ticketController";
+import { createTicket, deleteTicket, readTicket, updateTicket } from "../controller/ticketController";
 const app = express();
 
 // allow to read json from the body
@@ -10,5 +10,9 @@ app.get(`/ticket`, readTicket);
 
 // adress for add new event
 app.post(`/ticket`, createTicket);
+
+app.put(`/ticket/:ticketID`, updateTicket);
+
+app.delete(`/ticket/:ticketID`, deleteTicket);
 
 export default app;

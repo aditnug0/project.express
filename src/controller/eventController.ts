@@ -55,6 +55,7 @@ const readEvent = async (request: Request, response: Response) => {
   }
 };
 
+
 // baru
 // function for update event 
 const updateEvent = async (request: Request, response: Response) => {
