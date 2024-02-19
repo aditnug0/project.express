@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { Request, Response, request, response } from "express";
+import { eventNames } from "process";
 
 // create an object from prisma
 const prisma = new PrismaClient();
@@ -39,9 +40,26 @@ const createEvent = async (request: Request, response: Response) => {
 // create a function to READ event
 const readEvent = async (request: Request, response: Response) => {
   try {
+    // pagination
+    const page = Number(request.query.page) || 1;
+    const qty = Number(request.query.qty) || 5;
+    // searching
+    const keyword = request.query.keyword?.toString() || "";
+
     // await untuk memebri delay pada sistem asyncronous sehingga berjalan
     // seperti syncronous dan menunggu sistem sebelumnya
-    const dataEvent = await prisma.events.findMany();
+    const dataEvent = await prisma.events.findMany({
+      //untuk mendefinisikan jml data yang diambil
+      take: qty,
+      skip: (page - 1) * qty,
+      where: {
+        OR: [
+          { eventName: { contains: keyword } },
+          { venue: { contains: keyword } }
+        ]
+      },
+      orderBy: { eventName: "asc" }
+    });
     return response.status(200).json({
       status: true,
       message: `Events has been loaded`,
