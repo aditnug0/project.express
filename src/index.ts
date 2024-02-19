@@ -24,7 +24,7 @@ app.use(express.json());
 /**proses pertama untuk handle request */
 app.get(`/serena`, (request: Request, response: Response) => {
   /**ini adalah proses handle request dengan url adress
-   * url adress :https//localhost:8000/serena
+   * url adress :http//localhost:8000/serena
    * method get
    */
 
