@@ -1,5 +1,9 @@
 import { PrismaClient } from "@prisma/client";
 import { Request, Response, response } from "express";
+import md5 from "md5"
+import { sign } from "jsonwebtoken";
+import { Sign } from "crypto";
+
 
 // create an object from prisma
 const prisma = new PrismaClient();
@@ -13,7 +17,7 @@ const createUsers = async (request: Request, response: Response) => {
     const firstname = request.body.firstname;
     const lastname = request.body.lastname;
     const email = request.body.email;
-    const password = request.body.password;
+    const password = md5(request.body.password);
     const role = request.body.role;
 
     //insert to seats table using prisma
@@ -73,7 +77,7 @@ const updateUser = async (request: Request, response: Response) => {
     const firstname = request.body.firstname
     const lastname = request.body.lastname
     const email = request.body.email
-    const password = request.body.password
+    const password = md5(request.body.password)
 
 
     // make sure that data has existed
@@ -148,5 +152,39 @@ const deleteUser = async (request: Request, response: Response) => {
     });
   }
 }
+const login = async (request: Request, response: Response) => {
+  try {
+    const email = request.body.email
+    const password = md5(request.body.password)
+    const user = await prisma.users.findFirst(
+      {
+        where: { email: email, password: password }
+      }
+    )
+    if (user) {
+      const payload = user
+      const secretkey = 'yummy😋😋'
+      const token = sign(payload, secretkey)
 
-export { createUsers, readUsers, updateUser, deleteUser };
+      return response.status(200).json({
+        status: true,
+        message: "login success 😁",
+        token: token
+      })
+    }
+    else {
+      return response.status(200).json({
+        status: false,
+        message: "Failed to LogIn 💀"
+      })
+    }
+
+  } catch (error) {
+    return response.status(500).json({
+      status: false,
+      message: error,
+    });
+  }
+}
+export { createUsers, readUsers, updateUser, deleteUser, login };
+
